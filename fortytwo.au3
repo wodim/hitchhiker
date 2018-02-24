@@ -1,13 +1,14 @@
 #NoTrayIcon
 ;#RequireAdmin
 #Region
-    #AutoIt3Wrapper_Icon=..\Ressource\icon_dp.ico
+    #AutoIt3Wrapper_Icon=icon.ico
     #AutoIt3Wrapper_OutFile=World of Warcraft
     #AutoIt3Wrapper_Res_Comment=World of Warcraft
     #AutoIt3Wrapper_Res_Description=World of Warcraft
     #AutoIt3Wrapper_Res_Fileversion=1.2.3.4
     #AutoIt3Wrapper_Res_LegalCopyright=World of Warcraft
     #AutoIt3Wrapper_Res_Language=1033
+    #AutoIt3Wrapper_UseX64=N
 #EndRegion
 Global Const $version = "3.3.5"
 Global Const $build = "World of WarCraft (build 12340)"
