@@ -1,37 +1,222 @@
-Func supersaut()
-    If _ispressed(20) Then
-        $supersautinputedbrut = GUICtrlRead($supersautinput)
-        $supersautinputed = Abs($supersautinputedbrut) * (-1)
-        _memorywrite($playerbase + $hauteursaut, $wowprocess, $supersautinputed, "float")
+Func scpflymod()
+    $priveflyspeedinputed = GUICtrlRead($priveflyspeedinput)
+    If $scpriveflymodon = 0 Then
+        $scpriveflymodon = 1
+        GUICtrlSetState($priveflymodon, $gui_checked)
+        _memorywrite($playerbase + $playerstate, $wowprocess, 129, "dword")
+        _memorywrite($playerbase + $flyspeed, $wowprocess, $priveflyspeedinputed, "float")
+    Else
+        $scpriveflymodon = 0
+        GUICtrlSetState($priveflymodon, $gui_unchecked)
+        _memorywrite($playerbase + $playerstate, $wowprocess, 128, "dword")
+        _memorywrite($playerbase + $flyspeed, $wowprocess, 7, "float")
     EndIf
 EndFunc
 
-Func wallclimbfunc()
-    If GUICtrlRead($wallclimbon) = $gui_unchecked OR GUICtrlRead($privewallclimbon) = $gui_unchecked Then
+Func scpfreezez()
+    If $scprivefreezezon = 0 Then
+        $scprivefreezezon = 1
+        GUICtrlSetState($privefreezezon, $gui_checked)
+        _memorywrite($playerbase + $playerstate2, $wowprocess, -2147482624, "ptr")
+    Else
+        $scprivefreezezon = 0
+        GUICtrlSetState($privefreezezon, $gui_unchecked)
+        _memorywrite($playerbase + $playerstate2, $wowprocess, -2147483648, "ptr")
+    EndIf
+EndFunc
+
+Func scpspeed()
+    $privespeedinputed = GUICtrlRead($privespeedinput)
+    If $scprivespeedon = 0 Then
+        $scprivespeedon = 1
+        GUICtrlSetState($privespeedon, $gui_checked)
+        _memorywrite($playerbase + $speed, $wowprocess, $privespeedinputed, "float")
+        _memorywrite($playerbase + $speedswim, $wowprocess, $privespeedinputed, "float")
+    Else
+        $scprivespeedon = 0
+        GUICtrlSetState($privespeedon, $gui_unchecked)
+        _memorywrite($playerbase + $speed, $wowprocess, 7, "float")
+        _memorywrite($playerbase + $speedswim, $wowprocess, 4.7, "float")
+    EndIf
+EndFunc
+
+Func scpspeedglobale()
+    If GUICtrlRead($privespeedon) = $gui_unchecked Then
+        GUICtrlSetState($privespeedon, $gui_checked)
+    ElseIf GUICtrlRead($privespeedon) = $gui_checked Then
+        GUICtrlSetState($privespeedon, $gui_unchecked)
+    EndIf
+EndFunc
+
+Func scpwallclimb()
+    If $scprivewallclimbon = 0 Then
+        $scprivewallclimbon = 1
+        GUICtrlSetState($privewallclimbon, $gui_checked)
+        GUICtrlSetState($wallclimbon, $gui_checked)
+        _memorywrite($playerbase + $wallclimb, $wowprocess, 255, "float")
+    Else
+        $scprivewallclimbon = 0
+        GUICtrlSetState($privewallclimbon, $gui_unchecked)
+        GUICtrlSetState($wallclimbon, $gui_unchecked)
         _memorywrite($playerbase + $wallclimb, $wowprocess, 1, "float")
     EndIf
 EndFunc
 
-Func underwaterwalk()
-    If (GUICtrlRead($underwaterwalkon) = $gui_unchecked OR GUICtrlRead($priveunderwaterwalkon) = $gui_unchecked) AND (GUICtrlRead($walljumpon) = $gui_unchecked OR GUICtrlRead($privewalljumpon) = $gui_unchecked) Then
-        _memorywrite($playerbase2 + $playerflags, $wowprocess, 8, "dword")
-    ElseIf GUICtrlRead($walljumpon) = $gui_checked OR GUICtrlRead($privewalljumpon) = $gui_checked Then
-        _memorywrite($playerbase2 + $playerflags, $wowprocess, 12, "dword")
+Func scpclicktp()
+    If WinActive("World of Warcraft") Then
+        If $scpriveclicktpon = 0 Then
+            $scpriveclicktpon = 1
+            GUICtrlSetState($priveclicktp, $gui_checked)
+            If _ispressed(2) AND $scpriveclicktpon = 0 Then
+                $playerstateorg = _memoryread($playerbase + $playerstate2, $wowprocess, "ptr")
+                _memorywrite($playerbase + $playerstate2, $wowprocess, ($playerstateorg + 2048), "ptr")
+                Sleep(245)
+                _memorywrite($playerbase + $posx, $wowprocess, _memoryread($clicktpx, $wowprocess, "float"), "float")
+                _memorywrite($playerbase + $posy, $wowprocess, _memoryread($clicktpy, $wowprocess, "float"), "float")
+                _memorywrite($playerbase + $posz, $wowprocess, _memoryread($clicktpz, $wowprocess, "float"), "float")
+                Sleep(245)
+                _memorywrite($playerbase + $playerstate2, $wowprocess, $playerstateorg, "ptr")
+                _memorywrite($playerbase + $playerstate2, $wowprocess, ($playerstateorg + 1024), "ptr")
+                _memorywrite($playerbase + $playerstate2, $wowprocess, $playerstateorg, "ptr")
+            EndIf
+        Else
+            $scpriveclicktpon = 0
+            GUICtrlSetState($priveclicktp, $gui_unchecked)
+        EndIf
     EndIf
 EndFunc
 
-Func walljump()
-    If (GUICtrlRead($underwaterwalkon) = $gui_unchecked OR GUICtrlRead($priveunderwaterwalkon) = $gui_unchecked) AND (GUICtrlRead($walljumpon) = $gui_unchecked OR GUICtrlRead($privewalljumpon) = $gui_unchecked) Then
-        _memorywrite($playerbase2 + $playerflags, $wowprocess, 8, "dword")
-    ElseIf GUICtrlRead($underwaterwalkon) = $gui_checked OR GUICtrlRead($priveunderwaterwalkon) = $gui_checked Then
-        _memorywrite($playerbase2 + $playerflags, $wowprocess, 6, "dword")
+Func scpsupersaut()
+    If $scprivesupersauton = 0 Then
+        $scprivesupersauton = 1
+        GUICtrlSetState($privesupersauton, $gui_checked)
+        GUICtrlSetState($supersauton, $gui_checked)
+        If _ispressed(20) Then
+            $privesupersautinputed = GUICtrlRead($privesupersautinput) * (-1)
+            _memorywrite($playerbase + $hauteursaut, $wowprocess, $privesupersautinputed, "float")
+        EndIf
+    ElseIf $scprivesupersauton = 1 Then
+        $scprivesupersauton = 0
+        GUICtrlSetState($privesupersauton, $gui_unchecked)
+        GUICtrlSetState($supersauton, $gui_unchecked)
     EndIf
 EndFunc
 
-Func waterwalk()
-    If GUICtrlRead($waterwalkon) = $gui_unchecked Then
-        _memorywrite($waterwalkpatch, $wowprocess, -813624204, "Ptr")
-    EndIf
+Func scpspeedspeedn()
+    GUICtrlSetData($privespeedinput, 7)
+    GUICtrlSetData($privespeedglobaleinput, 7)
+    _memorywrite($playerbase + $speed, $wowprocess, 7, "float")
+    _memorywrite($playerbase + $speedswim, $wowprocess, 4.7, "float")
+EndFunc
+
+Func scpspeedspeed100()
+    GUICtrlSetData($privespeedinput, 14)
+    GUICtrlSetData($privespeedglobaleinput, 14)
+EndFunc
+
+Func scpspeedspeedcustom()
+    $privespeedcustominputed = GUICtrlRead($privesettinginputspeedcustominput)
+    GUICtrlSetData($privespeedinput, $privespeedcustominputed)
+    GUICtrlSetData($privespeedglobaleinput, $privespeedcustominputed)
+EndFunc
+
+Func scpspeedspeedp()
+    $privespeedinputed = GUICtrlRead($privespeedinput)
+    $priveincrement = GUICtrlRead($privesettinginputspeedincr)
+    GUICtrlSetData($privespeedinput, $privespeedinputed + $priveincrement)
+    GUICtrlSetData($privespeedglobaleinput, $privespeedinputed + $priveincrement)
+EndFunc
+
+Func scpspeedspeedm()
+    $privespeedinputed = GUICtrlRead($privespeedinput)
+    $priveincrement = GUICtrlRead($privesettinginputspeedincr)
+    GUICtrlSetData($privespeedinput, $privespeedinputed - $priveincrement)
+    GUICtrlSetData($privespeedglobaleinput, $privespeedinputed - $priveincrement)
+EndFunc
+
+Func scpspeedspeedflyn()
+    GUICtrlSetData($priveflyspeedinput, 7)
+EndFunc
+
+Func scpspeedspeedfly280()
+    GUICtrlSetData($priveflyspeedinput, 26.6)
+EndFunc
+
+Func scpspeedspeedflycustom()
+    $privespeedflycustominputed = GUICtrlRead($privesettinginputspeedflycustominput)
+    GUICtrlSetData($priveflyspeedinput, $privespeedflycustominputed)
+EndFunc
+
+Func scpspeedspeedflyp()
+    $privespeedflyinputed = GUICtrlRead($priveflyspeedinput)
+    $priveincrement = GUICtrlRead($privesettinginputspeedflyincr)
+    GUICtrlSetData($priveflyspeedinput, $privespeedflyinputed + $priveincrement)
+EndFunc
+
+Func scpspeedspeedflym()
+    $privespeedflyinputed = GUICtrlRead($priveflyspeedinput)
+    $priveincrement = GUICtrlRead($privesettinginputspeedflyincr)
+    GUICtrlSetData($priveflyspeedinput, $privespeedflyinputed - $priveincrement)
+EndFunc
+
+Func scpspeedsupersautp()
+    $privesupersautinputed = GUICtrlRead($privesupersautinput)
+    $priveincrement = GUICtrlRead($privesettinginputsupersautincr)
+    GUICtrlSetData($privesupersautinput, $privesupersautinputed + $priveincrement)
+    GUICtrlSetData($supersautinput, $privesupersautinputed + $priveincrement)
+EndFunc
+
+Func scpspeedsupersautm()
+    $privesupersautinputed = GUICtrlRead($privesupersautinput)
+    $priveincrement = GUICtrlRead($privesettinginputsupersautincr)
+    GUICtrlSetData($privesupersautinput, $privesupersautinputed - $priveincrement)
+    GUICtrlSetData($supersautinput, $privesupersautinputed - $priveincrement)
+EndFunc
+
+Func scpspeedtimespeedp()
+    $vitessetempsinputed = GUICtrlRead($vitessetempsinput)
+    $priveincrement = GUICtrlRead($privesettinginputtimespeedincr)
+    GUICtrlSetData($vitessetempsinput, $vitessetempsinputed + $priveincrement)
+    settimespeed()
+EndFunc
+
+Func scpspeedtimespeedm()
+    $vitessetempsinputed = GUICtrlRead($vitessetempsinput)
+    $priveincrement = GUICtrlRead($privesettinginputtimespeedincr)
+    GUICtrlSetData($vitessetempsinput, $vitessetempsinputed - $priveincrement)
+    settimespeed()
+EndFunc
+
+Func scpspeedtaillep()
+    $priveincrement = GUICtrlRead($privesettinginputtailleincr)
+    $playerscalevar = _memoryread($playerbase + $playerscale, $wowprocess, "float")
+    $playernewtaille = $playerscalevar * $priveincrement
+    _memorywrite(($playerbase + $playerscale), $wowprocess, $playernewtaille, "float")
+    GUICtrlSetData($playerscaleinput, Round($playernewtaille, 5))
+    $playerhauteurvar = _memoryread($playerbase + $playerhauteur, $wowprocess, "float")
+    $playernewtaille = $playerhauteurvar * $priveincrement
+    _memorywrite(($playerbase + $playerhauteur), $wowprocess, $playernewtaille, "float")
+    GUICtrlSetData($playerhauteurinput, Round($playernewtaille, 5))
+    $playerlargeurvar = _memoryread($playerbase + $playerlargeur, $wowprocess, "float")
+    $playernewtaille = $playerlargeurvar * $priveincrement
+    _memorywrite(($playerbase + $playerlargeur), $wowprocess, $playernewtaille, "float")
+    GUICtrlSetData($playerlargeurinput, Round($playernewtaille, 5))
+EndFunc
+
+Func scpspeedtaillem()
+    $priveincrement = GUICtrlRead($privesettinginputtailleincr)
+    $playerscalevar = _memoryread($playerbase + $playerscale, $wowprocess, "float")
+    $playernewtaille = $playerscalevar / $priveincrement
+    _memorywrite(($playerbase + $playerscale), $wowprocess, $playernewtaille, "float")
+    GUICtrlSetData($playerscaleinput, Round($playernewtaille, 5))
+    $playerhauteurvar = _memoryread($playerbase + $playerhauteur, $wowprocess, "float")
+    $playernewtaille = $playerhauteurvar / $priveincrement
+    _memorywrite(($playerbase + $playerhauteur), $wowprocess, $playernewtaille, "float")
+    GUICtrlSetData($playerhauteurinput, Round($playernewtaille, 5))
+    $playerlargeurvar = _memoryread($playerbase + $playerlargeur, $wowprocess, "float")
+    $playernewtaille = $playerlargeurvar / $priveincrement
+    _memorywrite(($playerbase + $playerlargeur), $wowprocess, $playernewtaille, "float")
+    GUICtrlSetData($playerlargeurinput, Round($playernewtaille, 5))
 EndFunc
 
 Func tp()
@@ -170,166 +355,6 @@ Func sconoclipaction()
             Send("{left}{left}{right}{right}")
             $x = $x + 1
         EndIf
-    EndIf
-EndFunc
-
-Func trackherbes()
-    If GUICtrlRead($trackherbes) = $gui_checked Then
-        $trackvalue = _memoryread($playerbase2 + $ressources, $wowprocess, "dword")
-        _memorywrite($playerbase2 + $ressources, $wowprocess, ($trackvalue + 2), "dword")
-    Else
-        $trackvalue = _memoryread($playerbase2 + $ressources, $wowprocess, "dword")
-        _memorywrite($playerbase2 + $ressources, $wowprocess, ($trackvalue - 2), "dword")
-    EndIf
-EndFunc
-
-Func trackfilons()
-    If GUICtrlRead($trackfilons) = $gui_checked Then
-        $trackvalue = _memoryread($playerbase2 + $ressources, $wowprocess, "dword")
-        _memorywrite($playerbase2 + $ressources, $wowprocess, ($trackvalue + 4), "dword")
-    Else
-        $trackvalue = _memoryread($playerbase2 + $ressources, $wowprocess, "dword")
-        _memorywrite($playerbase2 + $ressources, $wowprocess, ($trackvalue - 4), "dword")
-    EndIf
-EndFunc
-
-Func trackcoffres()
-    If GUICtrlRead($trackcoffres) = $gui_checked Then
-        $trackvaluer = _memoryread($playerbase2 + $ressources, $wowprocess, "dword")
-        _memorywrite($playerbase2 + $ressources, $wowprocess, ($trackvaluer + 32), "dword")
-    Else
-        $trackvaluer = _memoryread($playerbase2 + $ressources, $wowprocess, "dword")
-        _memorywrite($playerbase2 + $ressources, $wowprocess, ($trackvaluer - 32), "dword")
-    EndIf
-EndFunc
-
-Func trackpoissons()
-    If GUICtrlRead($trackpoissons) = $gui_checked Then
-        $trackvaluer = _memoryread($playerbase2 + $ressources, $wowprocess, "dword")
-        _memorywrite($playerbase2 + $ressources, $wowprocess, ($trackvaluer + 262144), "dword")
-    Else
-        $trackvaluer = _memoryread($playerbase2 + $ressources, $wowprocess, "dword")
-        _memorywrite($playerbase2 + $ressources, $wowprocess, ($trackvaluer - 262144), "dword")
-    EndIf
-EndFunc
-
-Func trackallres()
-    If GUICtrlRead($trackallres) = $gui_checked Then
-        GUICtrlSetState($trackherbes, $gui_checked)
-        GUICtrlSetState($trackfilons, $gui_checked)
-        GUICtrlSetState($trackcoffres, $gui_checked)
-        GUICtrlSetState($trackpoissons, $gui_checked)
-        _memorywrite($playerbase2 + $ressources, $wowprocess, -1, "dword")
-    Else
-        GUICtrlSetState($trackherbes, $gui_unchecked)
-        GUICtrlSetState($trackfilons, $gui_unchecked)
-        GUICtrlSetState($trackcoffres, $gui_unchecked)
-        GUICtrlSetState($trackpoissons, $gui_unchecked)
-        _memorywrite($playerbase2 + $ressources, $wowprocess, 0, "dword")
-    EndIf
-EndFunc
-
-Func trackbetes()
-    If GUICtrlRead($trackbetes) = $gui_checked Then
-        $trackvalueh = _memoryread($playerbase2 + $hunt, $wowprocess, "dword")
-        _memorywrite($playerbase2 + $hunt, $wowprocess, ($trackvalueh + 1), "dword")
-    Else
-        $trackvalueh = _memoryread($playerbase2 + $hunt, $wowprocess, "dword")
-        _memorywrite($playerbase2 + $hunt, $wowprocess, ($trackvalueh - 1), "dword")
-    EndIf
-EndFunc
-
-Func trackdragons()
-    If GUICtrlRead($trackdragons) = $gui_checked Then
-        $trackvalueh = _memoryread($playerbase2 + $hunt, $wowprocess, "dword")
-        _memorywrite($playerbase2 + $hunt, $wowprocess, ($trackvalueh + 2), "dword")
-    Else
-        $trackvalueh = _memoryread($playerbase2 + $hunt, $wowprocess, "dword")
-        _memorywrite($playerbase2 + $hunt, $wowprocess, ($trackvalueh - 2), "dword")
-    EndIf
-EndFunc
-
-Func trackdemons()
-    If GUICtrlRead($trackdemons) = $gui_checked Then
-        $trackvalueh = _memoryread($playerbase2 + $hunt, $wowprocess, "dword")
-        _memorywrite($playerbase2 + $hunt, $wowprocess, ($trackvalueh + 4), "dword")
-    Else
-        $trackvalueh = _memoryread($playerbase2 + $hunt, $wowprocess, "dword")
-        _memorywrite($playerbase2 + $hunt, $wowprocess, ($trackvalueh - 4), "dword")
-    EndIf
-EndFunc
-
-Func trackelementaires()
-    If GUICtrlRead($trackelementaires) = $gui_checked Then
-        $trackvalueh = _memoryread($playerbase2 + $hunt, $wowprocess, "dword")
-        _memorywrite($playerbase2 + $hunt, $wowprocess, ($trackvalueh + 8), "dword")
-    Else
-        $trackvalueh = _memoryread($playerbase2 + $hunt, $wowprocess, "dword")
-        _memorywrite($playerbase2 + $hunt, $wowprocess, ($trackvalueh - 8), "dword")
-    EndIf
-EndFunc
-
-Func trackgeants()
-    If GUICtrlRead($trackgeants) = $gui_checked Then
-        $trackvalueh = _memoryread($playerbase2 + $hunt, $wowprocess, "dword")
-        _memorywrite($playerbase2 + $hunt, $wowprocess, ($trackvalueh + 16), "dword")
-    Else
-        $trackvalueh = _memoryread($playerbase2 + $hunt, $wowprocess, "dword")
-        _memorywrite($playerbase2 + $hunt, $wowprocess, ($trackvalueh - 16), "dword")
-    EndIf
-EndFunc
-
-Func trackmortsvivants()
-    If GUICtrlRead($trackmortsvivants) = $gui_checked Then
-        $trackvalueh = _memoryread($playerbase2 + $hunt, $wowprocess, "dword")
-        _memorywrite($playerbase2 + $hunt, $wowprocess, ($trackvalueh + 32), "dword")
-    Else
-        $trackvalueh = _memoryread($playerbase2 + $hunt, $wowprocess, "dword")
-        _memorywrite($playerbase2 + $hunt, $wowprocess, ($trackvalueh - 32), "dword")
-    EndIf
-EndFunc
-
-Func trackhumanoides()
-    If GUICtrlRead($trackhumanoides) = $gui_checked Then
-        $trackvalueh = _memoryread($playerbase2 + $hunt, $wowprocess, "dword")
-        _memorywrite($playerbase2 + $hunt, $wowprocess, ($trackvalueh + 64), "dword")
-    Else
-        $trackvalueh = _memoryread($playerbase2 + $hunt, $wowprocess, "dword")
-        _memorywrite($playerbase2 + $hunt, $wowprocess, ($trackvalueh - 64), "dword")
-    EndIf
-EndFunc
-
-Func trackbestioles()
-    If GUICtrlRead($trackbestioles) = $gui_checked Then
-        $trackvalueh = _memoryread($playerbase2 + $hunt, $wowprocess, "dword")
-        _memorywrite($playerbase2 + $hunt, $wowprocess, ($trackvalueh + 128), "dword")
-    Else
-        $trackvalueh = _memoryread($playerbase2 + $hunt, $wowprocess, "dword")
-        _memorywrite($playerbase2 + $hunt, $wowprocess, ($trackvalueh - 128), "dword")
-    EndIf
-EndFunc
-
-Func trackallbet()
-    If GUICtrlRead($trackallbet) = $gui_checked Then
-        GUICtrlSetState($trackbetes, $gui_checked)
-        GUICtrlSetState($trackdragons, $gui_checked)
-        GUICtrlSetState($trackdemons, $gui_checked)
-        GUICtrlSetState($trackelementaires, $gui_checked)
-        GUICtrlSetState($trackgeants, $gui_checked)
-        GUICtrlSetState($trackmortsvivants, $gui_checked)
-        GUICtrlSetState($trackhumanoides, $gui_checked)
-        GUICtrlSetState($trackbestioles, $gui_checked)
-        _memorywrite($playerbase2 + $hunt, $wowprocess, -1, "dword")
-    Else
-        GUICtrlSetState($trackbetes, $gui_unchecked)
-        GUICtrlSetState($trackdragons, $gui_unchecked)
-        GUICtrlSetState($trackdemons, $gui_unchecked)
-        GUICtrlSetState($trackelementaires, $gui_unchecked)
-        GUICtrlSetState($trackgeants, $gui_unchecked)
-        GUICtrlSetState($trackmortsvivants, $gui_unchecked)
-        GUICtrlSetState($trackhumanoides, $gui_unchecked)
-        GUICtrlSetState($trackbestioles, $gui_unchecked)
-        _memorywrite($playerbase2 + $hunt, $wowprocess, 0, "dword")
     EndIf
 EndFunc
 
@@ -552,28 +577,24 @@ Func speed()
 EndFunc
 
 Func collisionm2()
-    If GUICtrlRead($privecollisionsm2) = $gui_unchecked OR GUICtrlRead($collisionsm2) = $gui_unchecked Then
+    If GUICtrlRead($privecollisionsm2) = $gui_unchecked Then
         _memorywrite($collisionm2s, $wowprocess, 1166743412, "Ptr")
         _memorywrite($collisionm2c, $wowprocess, 23233551, "Ptr")
     EndIf
 EndFunc
 
 Func collisionwmo()
-    If GUICtrlRead($privecollisionswmo) = $gui_unchecked OR GUICtrlRead($collisionswmo) = $gui_unchecked Then
+    If GUICtrlRead($privecollisionswmo) = $gui_unchecked Then
         _memorywrite($collisionwmo, $wowprocess, -1070463371, "Ptr")
     EndIf
 EndFunc
 
 Func collisionall()
-    If GUICtrlRead($privecollisionsall) = $gui_unchecked OR GUICtrlRead($collisionsall) = $gui_unchecked Then
+    If GUICtrlRead($privecollisionsall) = $gui_unchecked Then
         GUICtrlSetState($privecollisionswmo, $gui_enable)
         GUICtrlSetState($privecollisionswmo, $gui_unchecked)
         GUICtrlSetState($privecollisionsm2, $gui_enable)
         GUICtrlSetState($privecollisionsm2, $gui_unchecked)
-        GUICtrlSetState($collisionswmo, $gui_enable)
-        GUICtrlSetState($collisionswmo, $gui_unchecked)
-        GUICtrlSetState($collisionsm2, $gui_enable)
-        GUICtrlSetState($collisionsm2, $gui_unchecked)
         _memorywrite($collisionm2s, $wowprocess, 1166743412, "Ptr")
         _memorywrite($collisionm2c, $wowprocess, 23233551, "Ptr")
         _memorywrite($collisionwmo, $wowprocess, -1070463371, "Ptr")
@@ -614,7 +635,7 @@ Func privemultijump()
 EndFunc
 
 Func privenoclip1()
-    If GUICtrlRead($privenoclip1on) = $gui_unchecked OR GUICtrlRead($noclip1on) = $gui_unchecked Then
+    If GUICtrlRead($privenoclip1on) = $gui_unchecked Then
         _memorywrite($collisionm2s, $wowprocess, 1166743412, "Ptr")
         _memorywrite($collisionm2c, $wowprocess, 23233551, "Ptr")
         _memorywrite($collisionwmo, $wowprocess, -1070463371, "Ptr")

@@ -63,8 +63,6 @@ Do
             GUISetState(@SW_SHOW, $stopchute)
         Case $optionsbutton
             GUISetState(@SW_SHOW, $guisetting)
-        Case $scsettings
-            GUISetState(@SW_SHOW, $scsettingsgui)
         Case $privescsettings
             GUISetState(@SW_SHOW, $privescsettingsgui)
         Case $gui_event_close
@@ -113,7 +111,6 @@ Do
                 IniWrite($setting, "Options", "pspeedglobalevalue", GUICtrlRead($privespeedglobaleinput))
                 IniWrite($setting, "Options", "pflymodspeedvalue", GUICtrlRead($priveflyspeedinput))
                 IniWrite($setting, "Options", "psupersautvalue", GUICtrlRead($privesupersautinput))
-                IniWrite($setting, "Options", "osupersautvalue", GUICtrlRead($supersautinput))
                 IniWrite($setting, "Options", "pXYZSpeed", GUICtrlRead($privexyzspeedinput))
                 If IniRead($setting, "Options", "Options", "Erreur") = 1 Then
                     savevalues()
@@ -201,48 +198,6 @@ Do
             addtp()
         Case $deltp
             deltp()
-        Case $underwaterwalkon
-            underwaterwalk()
-        Case $waterwalkon
-            waterwalk()
-        Case $walljumpon
-            walljump()
-        Case $wallclimbon
-            wallclimbfunc()
-        Case $collisionsm2
-            collisionm2()
-        Case $collisionswmo
-            collisionwmo()
-        Case $collisionsall
-            collisionall()
-        Case $trackherbes
-            trackherbes()
-        Case $trackfilons
-            trackfilons()
-        Case $trackcoffres
-            trackcoffres()
-        Case $trackpoissons
-            trackpoissons()
-        Case $trackallres
-            trackallres()
-        Case $trackallbet
-            trackallbet()
-        Case $trackbetes
-            trackbetes()
-        Case $trackdragons
-            trackdragons()
-        Case $trackdemons
-            trackdemons()
-        Case $trackelementaires
-            trackelementaires()
-        Case $trackgeants
-            trackgeants()
-        Case $trackmortsvivants
-            trackmortsvivants()
-        Case $trackhumanoides
-            trackhumanoides()
-        Case $trackbestioles
-            trackbestioles()
         Case $settargetemote
             settargetemote()
         Case $titremenu
@@ -279,12 +234,6 @@ Do
             playershow1()
         Case $playerflags2check2
             playershow2()
-        Case $raccourcis
-            If GUICtrlRead($raccourcis) = $gui_checked Then
-                assignsc()
-            Else
-                unassignsc()
-            EndIf
         Case $priveraccourcis
             If GUICtrlRead($priveraccourcis) = $gui_checked Then
                 assignscprivate()
@@ -297,12 +246,6 @@ Do
     ElseIf WinGetState("Raccourcis Officiel") = 15 Then
         scsettings()
     Else
-    EndIf
-    If GUICtrlRead($tpon) = $gui_checked Then
-        tp()
-    EndIf
-    If GUICtrlRead($supersauton) = $gui_checked Then
-        supersaut()
     EndIf
     If GUICtrlRead($privesupersauton) = $gui_checked Then
         privesupersaut()
