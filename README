@@ -8,3 +8,6 @@ get caught using it. (That's why nobody uses it anymore.) There are better
 alternatives now that get attached as debuggers and use SetThreadContext to
 change the EIP and all of that to alter the behaviour of the game without
 writing in addresses that are checked by Warden/Sentinel/whatever.
+
+To download a compiled version of Fortytwo, visit the releases page:
+https://github.com/wodim/hitchhiker/releases
