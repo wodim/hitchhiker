@@ -1,0 +1,10 @@
+Fortytwo
+========
+
+Nothing more than a cleaned up version of The Hitchhiker's Hack.
+
+Not recommended at all since it writes in process memory which means you'll
+get caught using it. (That's why nobody uses it anymore.) There are better
+alternatives now that get attached as debuggers and use SetThreadContext to
+change the EIP and all of that to alter the behaviour of the game without
+writing in addresses that are checked by Warden/Sentinel/whatever.
